@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme {
+  /* Angry Birds palette */
+  --color-bg: #0a1628;
+  --color-surface: #111e35;
+  --color-accent: #e53935;        /* AB red */
+  --color-accent-hover: #ef5350;
+  --color-yellow: #ffc107;        /* AB yellow */
+  --color-yellow-dark: #e65100;
+  --color-success: #4caf50;       /* AB green pig */
+  --color-success-dark: #1b5e20;
+  --color-text: #ffffff;
+  --color-muted: #6b82a8;
+  --color-border: #1e3050;
+
+  --font-display: var(--font-oswald);
+  --font-body: var(--font-noto-sans-kr);
+
+  --breakpoint-sm: 481px;
+  --breakpoint-md: 769px;
+}
+
+@layer base {
+  html {
+    background-color: #0a1628;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(30,80,180,0.25) 0%, transparent 70%);
+    color: #ffffff;
+    font-family: var(--font-body), sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer utilities {
+  .text-display {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* AB panel — dark navy card */
+  .mc-panel {
+    background: #111e35;
+    border: 2px solid #1e3a60;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.5);
+    border-radius: 0;
+  }
+
+  /* AB button — slate */
+  .mc-btn {
+    background: #1e3050;
+    border: 2px solid #2a4470;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 0 rgba(0,0,0,0.5);
+    border-radius: 0;
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    transition: filter 0.1s;
+    cursor: pointer;
+  }
+
+  .mc-btn:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    filter: brightness(0.85);
+  }
+
+  /* AB primary button — Angry Bird red */
+  .mc-btn-orange {
+    background: #e53935;
+    border: 2px solid #7f0000;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 3px 0 #7f0000;
+    border-radius: 0;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    transition: filter 0.1s;
+    cursor: pointer;
+  }
+
+  .mc-btn-orange:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 #7f0000;
+    filter: brightness(0.88);
+    transform: translateY(2px);
+  }
+
+  /* AB yellow button */
+  .mc-btn-yellow {
+    background: #ffc107;
+    border: 2px solid #e65100;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 3px 0 #bf360c;
+    border-radius: 0;
+    color: #1a0a00;
+    font-weight: 700;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    transition: filter 0.1s;
+    cursor: pointer;
+  }
+
+  .mc-btn-yellow:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 #bf360c;
+    filter: brightness(0.92);
+    transform: translateY(2px);
+  }
+
+  /* AB green button */
+  .mc-btn-green {
+    background: #4caf50;
+    border: 2px solid #1b5e20;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 3px 0 #1b5e20;
+    border-radius: 0;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    transition: filter 0.1s;
+    cursor: pointer;
+  }
+
+  .mc-btn-green:active {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 #1b5e20;
+    filter: brightness(0.88);
+    transform: translateY(2px);
+  }
+
+  .mc-input {
+    background: #07101f;
+    border: 2px solid #1e3050;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    border-radius: 0;
+    color: #ffffff;
+    outline: none;
+  }
+
+  .mc-input:focus {
+    border-color: #ffc107;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 0 1px #ffc107;
+  }
+}
