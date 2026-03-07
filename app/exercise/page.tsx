@@ -7,7 +7,7 @@ import PoseOverlay from "@/components/camera/PoseOverlay";
 import DinoGame, { type GamePhase } from "@/components/exercise/DinoGame";
 import { initPoseLandmarker, type PoseLandmarkerResult } from "@/lib/pose/detector";
 import { createRepCounter, processPoseResult, type RepCounterState } from "@/lib/pose/repCounter";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { todayString } from "@/lib/utils/streak";
 
 export default function ExercisePage() {
@@ -79,11 +79,13 @@ export default function ExercisePage() {
     const finalScore = bestScoreRef.current;
     localStorage.setItem(`reps_${today}`, String(finalScore));
     try {
-      const supabase = createClient();
-      await supabase.from("workout_logs").upsert(
-        { user_id: userId, date: today, reps: finalScore, completed_at: new Date().toISOString() },
-        { onConflict: "user_id,date", ignoreDuplicates: false }
-      );
+      if (isSupabaseConfigured) {
+        const supabase = createClient();
+        await supabase.from("workout_logs").upsert(
+          { user_id: userId, date: today, reps: finalScore, completed_at: new Date().toISOString() },
+          { onConflict: "user_id,date", ignoreDuplicates: false }
+        );
+      }
     } catch { /* offline fallback */ }
     router.push(`/results?reps=${finalScore}`);
   }

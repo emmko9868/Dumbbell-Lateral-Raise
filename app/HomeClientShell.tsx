@@ -7,7 +7,7 @@ import StreakBadge from "@/components/home/StreakBadge";
 import RankingFeed from "@/components/home/RankingFeed";
 import HeroScene from "@/components/home/HeroScene";
 import BottomNav from "@/components/ui/BottomNav";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { calcStreak, todayString } from "@/lib/utils/streak";
 import type { DailyRanking } from "@/lib/supabase/types";
 
@@ -32,22 +32,25 @@ export default function HomeClientShell({ todayRankings }: HomeClientShellProps)
   }, [router]);
 
   useEffect(() => {
-    if (!userId) return;
-    const supabase = createClient();
-    const today = todayString();
-    const channel = supabase.channel("daily_rankings_realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "workout_logs" }, async () => {
-        const { data } = await supabase.from("daily_rankings").select("*").eq("date", today).order("rank", { ascending: true });
-        if (data) setRankings(data);
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    if (!userId || !isSupabaseConfigured) return;
+    try {
+      const supabase = createClient();
+      const today = todayString();
+      const channel = supabase.channel("daily_rankings_realtime")
+        .on("postgres_changes", { event: "*", schema: "public", table: "workout_logs" }, async () => {
+          const { data } = await supabase.from("daily_rankings").select("*").eq("date", today).order("rank", { ascending: true });
+          if (data) setRankings(data);
+        })
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    } catch { /* Supabase 미설정 */ }
   }, [userId]);
 
   async function loadUserData(uid: string) {
     const today = todayString();
     const localReps = localStorage.getItem(`reps_${today}`);
     if (localReps) setTodayReps(parseInt(localReps, 10));
+    if (!isSupabaseConfigured) return;
     try {
       const supabase = createClient();
       const { data: logs } = await supabase.from("workout_logs").select("date, reps").eq("user_id", uid).order("date", { ascending: false });
