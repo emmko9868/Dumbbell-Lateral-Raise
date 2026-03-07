@@ -8,8 +8,10 @@ const RIGHT_SHOULDER = 12;
 const LEFT_WRIST = 15;
 const RIGHT_WRIST = 16;
 
-// Threshold: wrist must be this many normalized units above shoulder
-const THRESHOLD = 0.15;
+// THRESHOLD: shoulder.y - wrist.y > this = arm starts counting as "up" (≈80°)
+const THRESHOLD = -0.05;
+// LIFT_RANGE: additional normalized units above threshold = full lift (liftAmount=1)
+const LIFT_RANGE = 0.20;
 
 export type ArmState = "up" | "down";
 
@@ -17,10 +19,11 @@ export interface RepCounterState {
   count: number;
   armState: ArmState;
   isUp: boolean;
+  liftAmount: number; // 0 = at threshold (80°), 1 = fully raised
 }
 
 export function createRepCounter(): RepCounterState {
-  return { count: 0, armState: "down", isUp: false };
+  return { count: 0, armState: "down", isUp: false, liftAmount: 0 };
 }
 
 /**
@@ -42,10 +45,12 @@ export function processPoseResult(
   if (!leftShoulder || !rightShoulder || !leftWrist || !rightWrist)
     return state;
 
-  // Check if either wrist is above corresponding shoulder by threshold
-  const leftUp = leftShoulder.y - leftWrist.y > THRESHOLD;
-  const rightUp = rightShoulder.y - rightWrist.y > THRESHOLD;
-  const isUp = leftUp || rightUp;
+  // Compute how much each arm is above threshold (0 = at threshold, 1 = fully raised)
+  const leftRaw = leftShoulder.y - leftWrist.y - THRESHOLD;
+  const rightRaw = rightShoulder.y - rightWrist.y - THRESHOLD;
+  const rawLift = Math.max(leftRaw, rightRaw);
+  const liftAmount = Math.min(1, Math.max(0, rawLift / LIFT_RANGE));
+  const isUp = liftAmount > 0;
 
   let { count, armState } = state;
 
@@ -56,5 +61,5 @@ export function processPoseResult(
     count += 1;
   }
 
-  return { count, armState, isUp };
+  return { count, armState, isUp, liftAmount };
 }

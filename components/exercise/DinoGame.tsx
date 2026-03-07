@@ -10,11 +10,13 @@ const BIRD_X = 110;
 const BIRD_W = 34;
 const BIRD_H = 26;
 
-// Physics: fast upward snap, slow controlled fall
-const GRAVITY_UP = 0.55;
-const GRAVITY_DOWN = 0.006;
-const MAX_FALL_SPEED = 0.60;
-const FLAP_VEL = -12.0;
+// Physics: proportional lift from arm angle, gravity when arm is down
+const GRAVITY_DOWN = 0.05;
+const MAX_FALL_SPEED = 3.0;
+const FLAP_VEL_MAX = -8.0;  // velocity at full arm raise (liftAmount=1)
+const LIFT_SMOOTH = 0.12;    // how fast birdVY tracks target
+// Tap mode: single impulse
+const TAP_FLAP_VEL = -10.0;
 const DANGER_DIST = 85;
 
 // Minecraft pixel scale
@@ -37,17 +39,18 @@ interface GameState {
   score: number;
   frame: number;
   lastFlapFrame: number;
+  liftAmount: number;
 }
 
 export interface DinoGameProps {
-  isUp: boolean;
+  liftAmount: number; // 0 = arm down, 0~1 = proportional raise
   onPhaseChange?: (phase: GamePhase) => void;
   onScoreChange?: (score: number) => void;
   onJump?: () => void;
 }
 
 export default function DinoGame({
-  isUp,
+  liftAmount,
   onPhaseChange,
   onScoreChange,
   onJump,
@@ -62,6 +65,7 @@ export default function DinoGame({
     score: 0,
     frame: 0,
     lastFlapFrame: -99,
+    liftAmount: 0,
   });
 
   const cloudXRef = useRef([380, 160, 530]);
@@ -80,21 +84,36 @@ export default function DinoGame({
     onScoreChange?.(0);
   }, [onPhaseChange, onScoreChange]);
 
+  // Tap mode: single impulse flap
   const flap = useCallback(() => {
     const s = gs.current;
     if (s.phase === "dead") { resetGame(); return; }
     if (s.phase === "idle") { s.phase = "playing"; onPhaseChange?.("playing"); }
-    s.birdVY = FLAP_VEL;
+    s.birdVY = TAP_FLAP_VEL;
     s.score++;
     s.lastFlapFrame = s.frame;
     onScoreChange?.(s.score);
     onJump?.();
   }, [onPhaseChange, onScoreChange, onJump, resetGame]);
 
+  // Arm tracking: update liftAmount and count reps on rising edge
   useEffect(() => {
-    if (isUp && !prevIsUpRef.current) flap();
+    const s = gs.current;
+    const wasUp = prevIsUpRef.current;
+    const isUp = liftAmount > 0;
+    s.liftAmount = liftAmount;
+
+    if (isUp && !wasUp) {
+      // Rising edge: start game / count rep
+      if (s.phase === "dead") { resetGame(); return; }
+      if (s.phase === "idle") { s.phase = "playing"; onPhaseChange?.("playing"); }
+      s.score++;
+      s.lastFlapFrame = s.frame;
+      onScoreChange?.(s.score);
+      onJump?.();
+    }
     prevIsUpRef.current = isUp;
-  }, [isUp, flap]);
+  }, [liftAmount, onPhaseChange, onScoreChange, onJump, resetGame]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -294,8 +313,15 @@ export default function DinoGame({
       const cloudX = cloudXRef.current;
 
       if (s.phase === "playing") {
-        s.birdVY += s.birdVY < 0 ? GRAVITY_UP : GRAVITY_DOWN;
-        if (s.birdVY > MAX_FALL_SPEED) s.birdVY = MAX_FALL_SPEED;
+        if (s.liftAmount > 0) {
+          // Arm is raised: apply upward force proportional to lift angle
+          const targetVY = FLAP_VEL_MAX * s.liftAmount;
+          s.birdVY += (targetVY - s.birdVY) * LIFT_SMOOTH;
+        } else {
+          // Arm down: gravity
+          s.birdVY += GRAVITY_DOWN;
+          if (s.birdVY > MAX_FALL_SPEED) s.birdVY = MAX_FALL_SPEED;
+        }
         s.birdY += s.birdVY;
 
         if (s.birdY < 8) {

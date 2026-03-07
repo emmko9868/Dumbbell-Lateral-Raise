@@ -44,7 +44,7 @@ export default function ExercisePage() {
     let landmarker: Awaited<ReturnType<typeof initPoseLandmarker>> | null = null;
 
     async function startLoop() {
-      try { landmarker = await initPoseLandmarker(); } catch { return; }
+      try { landmarker = await initPoseLandmarker(); } catch (e) { console.error("MediaPipe init failed:", e); return; }
       const video = document.querySelector("video") as HTMLVideoElement | null;
       if (!video) return;
       function loop() {
@@ -90,7 +90,7 @@ export default function ExercisePage() {
     router.push(`/results?reps=${finalScore}`);
   }
 
-  const isUp = cameraAllowed === true ? repState.isUp : false;
+  const liftAmount = cameraAllowed === true ? repState.liftAmount : 0;
   const isTapMode = cameraAllowed === false;
 
   return (
@@ -173,7 +173,7 @@ export default function ExercisePage() {
                   ? { background: "#4caf50", boxShadow: "0 0 8px rgba(76,175,80,0.9)" }
                   : { background: "#1e3050", border: "1px solid #2a4470" }} />
               <p className="text-[10px] font-bold" style={{ color: repState.isUp ? "#4caf50" : "#6b82a8" }}>
-                {repState.isUp ? "팔 올라감 — 퍼덕!" : "팔을 어깨 위로 들어올리세요"}
+                {repState.isUp ? `팔 올라감 ${Math.round(repState.liftAmount * 100)}% — 퍼덕!` : "팔을 어깨 위로 들어올리세요"}
               </p>
             </div>
           )}
@@ -181,7 +181,7 @@ export default function ExercisePage() {
 
         {/* BOTTOM HALF — Game */}
         <div className="flex flex-col overflow-hidden">
-          <DinoGame isUp={isUp} onPhaseChange={handlePhaseChange} onScoreChange={handleScoreChange} onJump={handleJump} />
+          <DinoGame liftAmount={liftAmount} onPhaseChange={handlePhaseChange} onScoreChange={handleScoreChange} onJump={handleJump} />
 
           {gamePhase === "idle" && (
             <p className="px-4 pt-2 text-center text-sm font-bold" style={{ color: "#6b82a8" }}>

@@ -15,15 +15,28 @@ export async function initPoseLandmarker(): Promise<PoseLandmarker> {
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
   );
 
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
-      delegate: "GPU",
-    },
-    runningMode: "VIDEO",
-    numPoses: 1,
-  });
+  // Try GPU first; fall back to CPU (common failure on mobile Safari/Chrome)
+  try {
+    poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      numPoses: 1,
+    });
+  } catch {
+    poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+        delegate: "CPU",
+      },
+      runningMode: "VIDEO",
+      numPoses: 1,
+    });
+  }
 
   return poseLandmarker;
 }
