@@ -8,19 +8,19 @@ import HomeClientShell from "./HomeClientShell";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const today = new Date().toISOString().split("T")[0];
+  let rankings = null;
+  try {
+    const supabase = await createClient();
+    const today = new Date().toISOString().split("T")[0];
+    const { data } = await supabase
+      .from("daily_rankings")
+      .select("*")
+      .eq("date", today)
+      .order("rank", { ascending: true });
+    rankings = data;
+  } catch {
+    // Supabase 미설정 또는 네트워크 오류 — 빈 랭킹으로 fallback
+  }
 
-  // Fetch today's rankings
-  const { data: rankings } = await supabase
-    .from("daily_rankings")
-    .select("*")
-    .eq("date", today)
-    .order("rank", { ascending: true });
-
-  return (
-    <HomeClientShell
-      todayRankings={rankings ?? []}
-    />
-  );
+  return <HomeClientShell todayRankings={rankings ?? []} />;
 }
