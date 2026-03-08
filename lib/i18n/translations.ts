@@ -1,6 +1,36 @@
 export type Locale = "ko" | "zh-TW";
 
-export const translations = {
+export interface Translations {
+  appName: string;
+  appSub: string;
+  unit: string;
+  onboarding: { badge: string; placeholder: string; cta: string; loading: string; dupError: string };
+  home: { greeting: string };
+  today: { label: string; done: string; notDone: string; startCta: string; doneCta: string };
+  streak: { unit: string; zero: string };
+  ranking: {
+    title: string; realtime: string; realtimeFull: string;
+    participants: (n: number) => string;
+    king: string; me: string; empty: string; viewAll: string;
+  };
+  calendar: { title: string; totalDays: string; streakUnit: string };
+  profile: { back: string; totalDays: string; streakUnit: string; noRecord: string; notFound: string };
+  exercise: {
+    back: string; flapCount: (n: number) => string; cameraLoading: string; tapMode: string;
+    armUp: (pct: number) => string; armDown: string; gameStart: string; gameStartTap: string;
+    bestScore: string; retry: string; save: string; saving: string; switchCamera: string;
+    dinoStart: string; dinoRestart: string;
+  };
+  results: {
+    newRecord: string; rank: (n: number) => string; share: string; home: string;
+    titleNormal: string; titleRecord: string;
+    shareText: (n: number) => string;
+    motivation: (reps: number) => string;
+  };
+  nav: { home: string; ranking: string; calendar: string };
+}
+
+export const translations: Record<Locale, Translations> = {
   ko: {
     appName: "어깨 깡패",
     appSub: "하루 한 번, 어깨를 깡패로 만든다",
@@ -173,6 +203,4 @@ export const translations = {
       calendar: "記錄",
     },
   },
-} as const;
-
-export type Translations = typeof translations.ko;
+};
