@@ -1,5 +1,8 @@
+"use client";
+
 import type { DailyRanking } from "@/lib/supabase/types";
 import Link from "next/link";
+import { useLang } from "@/lib/i18n/context";
 
 interface RankingFeedProps {
   rankings: DailyRanking[];
@@ -13,11 +16,13 @@ const PANEL: React.CSSProperties = {
 };
 
 export default function RankingFeed({ rankings, myUserId }: RankingFeedProps) {
+  const { t } = useLang();
+
   if (rankings.length === 0) {
     return (
       <div className="p-10 text-center" style={PANEL}>
         <p className="text-sm font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-          오늘 첫 번째 깡패가 되어보세요
+          {t.ranking.empty}
         </p>
       </div>
     );
@@ -28,11 +33,11 @@ export default function RankingFeed({ rankings, myUserId }: RankingFeedProps) {
       <div className="px-5 py-3 flex items-center justify-between"
         style={{ borderBottom: "2px solid #2a2a2a", background: "#444444" }}>
         <h2 className="text-sm font-bold" style={{ color: "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-          오늘 랭킹
+          {t.ranking.title}
         </h2>
         <span className="text-[9px] font-bold tracking-[0.15em] uppercase px-2 py-0.5"
           style={{ color: "#cccccc", background: "#2a2a2a", border: "1px solid #5a5a5a" }}>
-          실시간
+          {t.ranking.realtime}
         </span>
       </div>
 
@@ -68,13 +73,13 @@ export default function RankingFeed({ rankings, myUserId }: RankingFeedProps) {
                   {isFirst && (
                     <span className="text-[9px] font-bold tracking-wide shrink-0 px-1.5 py-0.5"
                       style={{ color: "#ff6b2b", background: "#2a1000", border: "1px solid #7a2800" }}>
-                      오늘의 깡패
+                      {t.ranking.king}
                     </span>
                   )}
                   {isMe && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 shrink-0"
                       style={{ color: "#39ff14", background: "#001800", border: "1px solid #1a6600" }}>
-                      나
+                      {t.ranking.me}
                     </span>
                   )}
                 </div>
@@ -84,7 +89,7 @@ export default function RankingFeed({ rankings, myUserId }: RankingFeedProps) {
                     style={{ color: isMe ? "#39ff14" : "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
                     {entry.reps}
                   </span>
-                  <span className="text-xs ml-0.5" style={{ color: "#aaaaaa" }}>회</span>
+                  <span className="text-xs ml-0.5" style={{ color: "#aaaaaa" }}>{t.unit}</span>
                 </div>
               </Link>
             </li>
@@ -95,7 +100,7 @@ export default function RankingFeed({ rankings, myUserId }: RankingFeedProps) {
       {rankings.length > 10 && (
         <Link href="/ranking" className="block text-center py-3 text-xs font-bold"
           style={{ borderTop: "2px solid #2a2a2a", color: "#cccccc", background: "#444444" }}>
-          전체 랭킹 보기 →
+          {t.ranking.viewAll}
         </Link>
       )}
     </div>

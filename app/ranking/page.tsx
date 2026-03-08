@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import LeaderboardList from "@/components/ranking/LeaderboardList";
 import BottomNav from "@/components/ui/BottomNav";
+import { useLang } from "@/lib/i18n/context";
 import type { DailyRanking } from "@/lib/supabase/types";
 import { todayString } from "@/lib/utils/streak";
 
@@ -11,6 +12,7 @@ export default function RankingPage() {
   const [rankings, setRankings] = useState<DailyRanking[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useLang();
 
   useEffect(() => {
     const uid = localStorage.getItem("userId");
@@ -39,17 +41,17 @@ export default function RankingPage() {
           <div>
             <h1 className="text-[28px] font-[family-name:var(--font-oswald)] font-bold text-[#f5f0e8] leading-none"
               style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-              오늘 랭킹
+              {t.ranking.title}
             </h1>
             <p className="text-[9px] font-bold mt-1.5 tracking-[0.2em] uppercase"
               style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-              실시간 업데이트
+              {t.ranking.realtimeFull}
             </p>
           </div>
           {rankings.length > 0 && (
             <div className="text-xs font-bold px-2 py-1"
               style={{ color: "#cccccc", background: "#3a3a3a", border: "1px solid #5a5a5a", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-              {rankings.length}명 참여
+              {t.ranking.participants(rankings.length)}
             </div>
           )}
         </div>

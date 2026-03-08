@@ -1,9 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_KR, Oswald } from "next/font/google";
+import { Noto_Sans_KR, Noto_Sans_TC, Oswald } from "next/font/google";
+import { LangProvider } from "@/lib/i18n/context";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+});
+
+const notoSansTC = Noto_Sans_TC({
+  variable: "--font-noto-sans-tc",
   subsets: ["latin"],
   weight: ["400", "500", "700", "900"],
 });
@@ -34,11 +41,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={`${notoSansKR.variable} ${oswald.variable}`}>
+    <html lang="ko" className={`${notoSansKR.variable} ${notoSansTC.variable} ${oswald.variable}`}>
       <body className="antialiased min-h-screen text-[#f5f0e8]">
-        <div className="mx-auto max-w-[480px] md:max-w-[600px] relative min-h-screen">
-          {children}
-        </div>
+        <LangProvider>
+          <div className="mx-auto max-w-[480px] md:max-w-[600px] relative min-h-screen">
+            {children}
+          </div>
+        </LangProvider>
       </body>
     </html>
   );

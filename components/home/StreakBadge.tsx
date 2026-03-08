@@ -1,8 +1,14 @@
+"use client";
+
+import { useLang } from "@/lib/i18n/context";
+
 interface StreakBadgeProps {
   streak: number;
 }
 
 export default function StreakBadge({ streak }: StreakBadgeProps) {
+  const { t } = useLang();
+
   return (
     <div className="px-5 py-4 flex items-center justify-between"
       style={{
@@ -12,10 +18,7 @@ export default function StreakBadge({ streak }: StreakBadgeProps) {
       }}>
       <div className="flex items-center gap-4">
         <div className="w-10 h-10 flex items-center justify-center text-xl"
-          style={{
-            background: "#1e3050",
-            border: "2px solid #2a4470",
-          }}>
+          style={{ background: "#1e3050", border: "2px solid #2a4470" }}>
           🔥
         </div>
         <div>
@@ -26,12 +29,12 @@ export default function StreakBadge({ streak }: StreakBadgeProps) {
                 {streak}
               </span>
               <span className="text-sm font-bold" style={{ color: "#6b82a8" }}>
-                일 연속 달성
+                {t.streak.unit}
               </span>
             </div>
           ) : (
             <p className="font-bold text-white">
-              오늘부터 시작!
+              {t.streak.zero}
             </p>
           )}
         </div>

@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const NAV_ITEMS = [
-  { href: "/", label: "홈", icon: HomeIcon },
-  { href: "/ranking", label: "랭킹", icon: TrophyIcon },
-  { href: "/calendar", label: "기록", icon: CalendarIcon },
-];
+import { useLang } from "@/lib/i18n/context";
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLang();
+
+  const NAV_ITEMS = [
+    { href: "/", label: t.nav.home, icon: HomeIcon },
+    { href: "/ranking", label: t.nav.ranking, icon: TrophyIcon },
+    { href: "/calendar", label: t.nav.calendar, icon: CalendarIcon },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] md:max-w-[600px] z-50"

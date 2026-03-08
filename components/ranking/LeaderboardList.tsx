@@ -2,6 +2,7 @@
 
 import type { DailyRanking } from "@/lib/supabase/types";
 import Link from "next/link";
+import { useLang } from "@/lib/i18n/context";
 
 interface LeaderboardListProps {
   rankings: DailyRanking[];
@@ -9,11 +10,13 @@ interface LeaderboardListProps {
 }
 
 export default function LeaderboardList({ rankings, myUserId }: LeaderboardListProps) {
+  const { t } = useLang();
+
   if (rankings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
         <p className="text-sm font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-          오늘 첫 번째 깡패가 되어보세요
+          {t.ranking.empty}
         </p>
       </div>
     );
@@ -52,13 +55,13 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
                     {isKing && (
                       <span className="text-[9px] font-bold tracking-wide shrink-0 px-1.5 py-0.5"
                         style={{ color: "#ff6b2b", background: "#2a1000", border: "1px solid #7a2800" }}>
-                        오늘의 깡패
+                        {t.ranking.king}
                       </span>
                     )}
                     {isMe && (
                       <span className="text-[9px] font-bold px-1.5 py-0.5 shrink-0"
                         style={{ color: "#39ff14", background: "#001800", border: "1px solid #1a6600" }}>
-                        나
+                        {t.ranking.me}
                       </span>
                     )}
                   </div>
@@ -69,7 +72,7 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
                     style={{ color: isMe ? "#39ff14" : isKing ? "#f5c842" : "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
                     {entry.reps}
                   </span>
-                  <span className="text-xs ml-0.5" style={{ color: "#aaaaaa" }}>회</span>
+                  <span className="text-xs ml-0.5" style={{ color: "#aaaaaa" }}>{t.unit}</span>
                 </div>
               </Link>
             </li>
@@ -90,13 +93,13 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
               {myEntry.nickname}
               <span className="ml-2 text-[9px] font-bold px-1.5 py-0.5"
                 style={{ color: "#39ff14", background: "#001800", border: "1px solid #1a6600" }}>
-                나
+                {t.ranking.me}
               </span>
             </span>
             <span className="font-[family-name:var(--font-oswald)] font-bold text-2xl shrink-0"
               style={{ color: "#39ff14", textShadow: "1px 1px 0 rgba(0,40,0,0.8)" }}>
               {myEntry.reps}
-              <span className="text-xs font-normal ml-0.5" style={{ color: "#aaaaaa" }}>회</span>
+              <span className="text-xs font-normal ml-0.5" style={{ color: "#aaaaaa" }}>{t.unit}</span>
             </span>
           </div>
         </div>

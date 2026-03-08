@@ -5,12 +5,14 @@ import { createClient } from "@/lib/supabase/client";
 import MonthCalendar from "@/components/calendar/MonthCalendar";
 import BottomNav from "@/components/ui/BottomNav";
 import { calcStreak } from "@/lib/utils/streak";
+import { useLang } from "@/lib/i18n/context";
 
 export default function CalendarPage() {
   const [logDates, setLogDates] = useState<string[]>([]);
   const [totalDays, setTotalDays] = useState(0);
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
+  const { t } = useLang();
 
   useEffect(() => {
     async function load() {
@@ -34,7 +36,7 @@ export default function CalendarPage() {
       <header className="px-5 pt-14 pb-5" style={{ borderBottom: "2px solid #3a3a3a" }}>
         <h1 className="text-[28px] font-[family-name:var(--font-oswald)] font-bold text-[#f5f0e8] leading-none"
           style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-          기록
+          {t.calendar.title}
         </h1>
         <div className="flex gap-3 mt-4">
           <div className="px-4 py-3 flex items-baseline gap-2"
@@ -44,7 +46,7 @@ export default function CalendarPage() {
               style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
               {totalDays}
             </span>
-            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>총 운동일</span>
+            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>{t.calendar.totalDays}</span>
           </div>
           <div className="px-4 py-3 flex items-baseline gap-2"
             style={{ background: "#2a1a0a", border: "2px solid #7a2800",
@@ -53,7 +55,7 @@ export default function CalendarPage() {
               style={{ textShadow: "2px 2px 0 rgba(100,30,0,0.8)" }}>
               {streak}
             </span>
-            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>일 연속</span>
+            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>{t.calendar.streakUnit}</span>
           </div>
         </div>
       </header>

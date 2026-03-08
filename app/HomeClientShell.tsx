@@ -7,8 +7,10 @@ import StreakBadge from "@/components/home/StreakBadge";
 import RankingFeed from "@/components/home/RankingFeed";
 import HeroScene from "@/components/home/HeroScene";
 import BottomNav from "@/components/ui/BottomNav";
+import LangToggle from "@/components/ui/LangToggle";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { calcStreak, todayString } from "@/lib/utils/streak";
+import { useLang } from "@/lib/i18n/context";
 import type { DailyRanking } from "@/lib/supabase/types";
 
 interface HomeClientShellProps {
@@ -17,6 +19,7 @@ interface HomeClientShellProps {
 
 export default function HomeClientShell({ todayRankings }: HomeClientShellProps) {
   const router = useRouter();
+  const { t } = useLang();
   const [userId, setUserId] = useState<string | null>(null);
   const [nickname, setNickname] = useState<string | null>(null);
   const [todayReps, setTodayReps] = useState<number | null>(null);
@@ -69,17 +72,20 @@ export default function HomeClientShell({ todayRankings }: HomeClientShellProps)
         <div>
           <h1 className="text-[36px] font-[family-name:var(--font-oswald)] font-bold leading-none tracking-tight"
             style={{ color: "#e53935", textShadow: "3px 3px 0 rgba(100,0,0,0.6), 0 0 30px rgba(229,57,53,0.3)" }}>
-            어깨 깡패
+            {t.appName}
           </h1>
           {nickname && (
             <p className="text-xs mt-1.5 font-bold" style={{ color: "#6b82a8" }}>
-              안녕, <span style={{ color: "#ffc107" }}>{nickname}</span>
+              {t.home.greeting} <span style={{ color: "#ffc107" }}>{nickname}</span>
             </p>
           )}
         </div>
-        <div className="text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1"
-          style={{ color: "#ffc107", background: "#1e3050", border: "1px solid #2a4470" }}>
-          DAILY
+        <div className="flex items-center gap-2">
+          <LangToggle />
+          <div className="text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1"
+            style={{ color: "#ffc107", background: "#1e3050", border: "1px solid #2a4470" }}>
+            DAILY
+          </div>
         </div>
       </header>
 

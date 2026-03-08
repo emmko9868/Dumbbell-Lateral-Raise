@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLang } from "@/lib/i18n/context";
+import LangToggle from "@/components/ui/LangToggle";
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { t } = useLang();
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +30,7 @@ export default function OnboardingPage() {
 
       if (insertError) {
         if (insertError.code === "23505") {
-          setError("이미 사용 중인 닉네임이에요.");
+          setError(t.onboarding.dupError);
           setLoading(false);
           return;
         }
@@ -51,14 +54,17 @@ export default function OnboardingPage() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, #0a1628 0%, #061020 100%)",
-      }}
+      style={{ background: "linear-gradient(180deg, #0a1628 0%, #061020 100%)" }}
     >
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
       <div className="w-full max-w-[320px] relative z-10">
+        {/* Lang toggle */}
+        <div className="flex justify-end mb-4">
+          <LangToggle />
+        </div>
+
         {/* Title panel */}
         <div
           className="text-center mb-6 px-8 py-6"
@@ -69,24 +75,24 @@ export default function OnboardingPage() {
           }}
         >
           <p className="text-[10px] tracking-[0.3em] uppercase mb-4 font-bold" style={{ color: "#6b82a8" }}>
-            어깨 운동 챌린지
+            {t.onboarding.badge}
           </p>
           <div className="leading-[0.85] mb-4">
             <div
               className="text-[88px] font-[family-name:var(--font-oswald)] font-bold tracking-tight"
               style={{ color: "#e53935", textShadow: "4px 4px 0 rgba(100,0,0,0.7), 0 0 60px rgba(229,57,53,0.4)" }}
             >
-              어깨
+              {t.appName.split(" ")[0]}
             </div>
             <div
               className="text-[88px] font-[family-name:var(--font-oswald)] font-bold tracking-tight"
               style={{ color: "#ffc107", textShadow: "4px 4px 0 rgba(100,50,0,0.7)" }}
             >
-              깡패
+              {t.appName.split(" ")[1] ?? ""}
             </div>
           </div>
           <p className="text-xs leading-relaxed" style={{ color: "#6b82a8" }}>
-            하루 한 번, 어깨를 깡패로 만든다
+            {t.appSub}
           </p>
         </div>
 
@@ -96,7 +102,7 @@ export default function OnboardingPage() {
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="나만의 닉네임 (ex. 어깨왕, 헬창99)"
+            placeholder={t.onboarding.placeholder}
             maxLength={20}
             autoFocus
             className="mc-input w-full px-4 py-4 text-[#f5f0e8] placeholder-[#555555] text-sm"
@@ -112,7 +118,7 @@ export default function OnboardingPage() {
             disabled={!nickname.trim() || loading}
             className="mc-btn-orange w-full py-4 text-base disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            {loading ? "잠깐만..." : "깡패 되러 가기"}
+            {loading ? t.onboarding.loading : t.onboarding.cta}
           </button>
         </form>
       </div>

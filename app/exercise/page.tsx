@@ -9,6 +9,7 @@ import { initPoseLandmarker, type PoseLandmarkerResult } from "@/lib/pose/detect
 import { createRepCounter, processPoseResult, type RepCounterState } from "@/lib/pose/repCounter";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { todayString } from "@/lib/utils/streak";
+import { useLang } from "@/lib/i18n/context";
 
 export default function ExercisePage() {
   const router = useRouter();
@@ -90,6 +91,7 @@ export default function ExercisePage() {
     router.push(`/results?reps=${finalScore}`);
   }
 
+  const { t } = useLang();
   const liftAmount = cameraAllowed === true ? repState.liftAmount : 0;
   const isTapMode = cameraAllowed === false;
 
@@ -98,7 +100,7 @@ export default function ExercisePage() {
       <header className="flex items-center justify-between px-5 pt-12 pb-3 shrink-0"
         style={{ borderBottom: "2px solid #1e3050" }}>
         <button onClick={() => router.back()} className="mc-btn text-sm px-3 py-1.5">
-          ← 뒤로
+          {t.exercise.back}
         </button>
         {gamePhase === "playing" && (
           <div className="flex items-center gap-2 px-3 py-1"
@@ -106,7 +108,7 @@ export default function ExercisePage() {
             <span className="w-1.5 h-1.5 rounded-full"
               style={{ background: "#4caf50", boxShadow: "0 0 6px rgba(76,175,80,0.8)" }} />
             <p className="text-xs font-bold" style={{ color: "#ffc107" }}>
-              퍼덕 {jumpCount}회
+              {t.exercise.flapCount(jumpCount)}
             </p>
           </div>
         )}
@@ -137,7 +139,7 @@ export default function ExercisePage() {
                 background: "rgba(10,22,40,0.7)",
                 border: "1px solid #2a4470",
               }}
-              aria-label="카메라 전환"
+              aria-label={t.exercise.switchCamera}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 16v4h-4" />
@@ -152,7 +154,7 @@ export default function ExercisePage() {
           {cameraAllowed === null && (
             <div className="absolute inset-0 flex items-center justify-center"
               style={{ background: "#111" }}>
-              <p className="text-xs font-bold" style={{ color: "#555" }}>카메라 연결 중...</p>
+              <p className="text-xs font-bold" style={{ color: "#555" }}>{t.exercise.cameraLoading}</p>
             </div>
           )}
 
@@ -160,7 +162,7 @@ export default function ExercisePage() {
           {isTapMode && (
             <div className="absolute inset-0 flex items-center justify-center"
               style={{ background: "#111" }}>
-              <p className="text-sm font-bold" style={{ color: "#cccccc" }}>탭해서 카운트</p>
+              <p className="text-sm font-bold" style={{ color: "#cccccc" }}>{t.exercise.tapMode}</p>
             </div>
           )}
 
@@ -173,7 +175,7 @@ export default function ExercisePage() {
                   ? { background: "#4caf50", boxShadow: "0 0 8px rgba(76,175,80,0.9)" }
                   : { background: "#1e3050", border: "1px solid #2a4470" }} />
               <p className="text-[10px] font-bold" style={{ color: repState.isUp ? "#4caf50" : "#6b82a8" }}>
-                {repState.isUp ? `팔 올라감 ${Math.round(repState.liftAmount * 100)}% — 퍼덕!` : "팔을 어깨 위로 들어올리세요"}
+                {repState.isUp ? t.exercise.armUp(Math.round(repState.liftAmount * 100)) : t.exercise.armDown}
               </p>
             </div>
           )}
@@ -181,11 +183,17 @@ export default function ExercisePage() {
 
         {/* BOTTOM HALF — Game */}
         <div className="flex flex-col overflow-hidden">
-          <DinoGame liftAmount={liftAmount} onPhaseChange={handlePhaseChange} onScoreChange={handleScoreChange} onJump={handleJump} />
+          <DinoGame
+            liftAmount={liftAmount}
+            strings={{ start: t.exercise.dinoStart, restart: t.exercise.dinoRestart, unit: t.unit }}
+            onPhaseChange={handlePhaseChange}
+            onScoreChange={handleScoreChange}
+            onJump={handleJump}
+          />
 
           {gamePhase === "idle" && (
             <p className="px-4 pt-2 text-center text-sm font-bold" style={{ color: "#6b82a8" }}>
-              {isTapMode ? "화면을 탭해서 시작" : "팔을 들어올려 시작"}
+              {isTapMode ? t.exercise.gameStartTap : t.exercise.gameStart}
             </p>
           )}
 
@@ -198,22 +206,22 @@ export default function ExercisePage() {
               }}>
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase mb-2"
                 style={{ color: "#6b82a8" }}>
-                오늘 최고 횟수
+                {t.exercise.bestScore}
               </p>
               <span className="text-[48px] leading-none font-[family-name:var(--font-oswald)] font-bold"
                 style={{ color: "#e53935", textShadow: "3px 3px 0 rgba(100,0,0,0.5)" }}>
                 {bestScoreRef.current}
               </span>
-              <p className="text-sm mt-1 mb-3 font-bold" style={{ color: "#6b82a8" }}>회</p>
+              <p className="text-sm mt-1 mb-3 font-bold" style={{ color: "#6b82a8" }}>{t.unit}</p>
 
               <div className="flex gap-2">
                 <button onClick={() => { setScore(0); setJumpCount(0); setGamePhase("idle"); }}
                   className="mc-btn flex-1 py-2.5 text-sm">
-                  다시 하기
+                  {t.exercise.retry}
                 </button>
                 <button onClick={handleSave} disabled={saving || bestScoreRef.current === 0}
                   className="mc-btn-orange flex-1 py-2.5 text-sm disabled:opacity-30">
-                  {saving ? "저장 중..." : "기록 저장"}
+                  {saving ? t.exercise.saving : t.exercise.save}
                 </button>
               </div>
             </div>

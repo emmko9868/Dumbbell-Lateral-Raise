@@ -3,12 +3,13 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getMotivationMessage, getResultTitle, getShareText } from "@/lib/utils/motivation";
+import { useLang } from "@/lib/i18n/context";
 import { todayString } from "@/lib/utils/streak";
 
 function ResultsContent() {
   const router = useRouter();
   const params = useSearchParams();
+  const { t } = useLang();
   const reps = parseInt(params.get("reps") ?? "0", 10);
   const [rank, setRank] = useState<number | null>(null);
   const [isNewRecord, setIsNewRecord] = useState(false);
@@ -28,10 +29,12 @@ function ResultsContent() {
   }, [reps]);
 
   function handleShare() {
-    const text = getShareText(reps);
+    const text = t.results.shareText(reps);
     if (navigator.share) navigator.share({ text });
     else navigator.clipboard.writeText(text);
   }
+
+  const title = isNewRecord ? t.results.titleRecord : t.results.titleNormal;
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
@@ -41,13 +44,13 @@ function ResultsContent() {
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 mb-6 font-bold text-xs tracking-wide"
               style={{ background: "#2a1000", border: "2px solid #ff6b2b", color: "#ff6b2b",
                 boxShadow: "inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.4)" }}>
-              신기록!
+              {t.results.newRecord}
             </div>
           )}
 
           <h1 className="text-2xl font-bold text-[#f5f0e8] mb-8 leading-snug"
             style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-            {getResultTitle(reps, isNewRecord)}
+            {title}
           </h1>
 
           {/* Big number panel */}
@@ -60,27 +63,27 @@ function ResultsContent() {
             </span>
             <span className="text-3xl font-[family-name:var(--font-oswald)] ml-2"
               style={{ color: "#aaaaaa", textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-              회
+              {t.unit}
             </span>
           </div>
 
           {rank !== null && (
             <p className="font-bold mb-6" style={{ color: "#ff6b2b", textShadow: "2px 2px 0 rgba(100,30,0,0.8)" }}>
-              오늘 {rank}위
+              {t.results.rank(rank)}
             </p>
           )}
           {rank === null && <div className="mb-6" />}
 
           <p className="text-sm leading-relaxed mb-8" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-            {getMotivationMessage(reps)}
+            {t.results.motivation(reps)}
           </p>
 
           <div className="space-y-2">
             <button onClick={handleShare} className="mc-btn w-full py-4 text-sm">
-              공유하기 💪
+              {t.results.share}
             </button>
             <button onClick={() => router.push("/")} className="mc-btn-orange w-full py-4 text-[17px]">
-              홈으로
+              {t.results.home}
             </button>
           </div>
         </div>

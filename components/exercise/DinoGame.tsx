@@ -42,8 +42,15 @@ interface GameState {
   liftAmount: number;
 }
 
+export interface DinoGameStrings {
+  start: string;
+  restart: string;
+  unit: string;
+}
+
 export interface DinoGameProps {
   liftAmount: number; // 0 = arm down, 0~1 = proportional raise
+  strings: DinoGameStrings;
   onPhaseChange?: (phase: GamePhase) => void;
   onScoreChange?: (score: number) => void;
   onJump?: () => void;
@@ -51,6 +58,7 @@ export interface DinoGameProps {
 
 export default function DinoGame({
   liftAmount,
+  strings,
   onPhaseChange,
   onScoreChange,
   onJump,
@@ -303,7 +311,7 @@ export default function DinoGame({
       ctx!.fillStyle = "#ffffff";
       ctx!.font = "bold 24px monospace";
       ctx!.textAlign = "right";
-      ctx!.fillText(`${score}회`, bx + bw - 8, by + 28);
+      ctx!.fillText(`${score}${strings.unit}`, bx + bw - 8, by + 28);
       ctx!.textAlign = "left";
     }
 
@@ -404,7 +412,7 @@ export default function DinoGame({
         ctx!.fillStyle = "#ffffff";
         ctx!.font = "bold 20px monospace";
         ctx!.textAlign = "center";
-        ctx!.fillText("팔을 들어올려 시작!", CW / 2, by + bh / 2 + 7);
+        ctx!.fillText(strings.start, CW / 2, by + bh / 2 + 7);
         ctx!.textAlign = "left";
       }
 
@@ -422,11 +430,11 @@ export default function DinoGame({
 
         ctx!.fillStyle = "#ff6b2b";
         ctx!.font = "bold 26px monospace";
-        ctx!.fillText(`${s.score}회`, CW / 2, CH / 2 + 8);
+        ctx!.fillText(`${s.score}${strings.unit}`, CW / 2, CH / 2 + 8);
 
         ctx!.fillStyle = "#aaaaaa";
         ctx!.font = "11px monospace";
-        ctx!.fillText("팔 올려서 재시작", CW / 2, CH / 2 + 34);
+        ctx!.fillText(strings.restart, CW / 2, CH / 2 + 34);
         ctx!.textAlign = "left";
       }
 
