@@ -5,18 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Angry Birds palette */
-  --color-bg: #0a1628;
-  --color-surface: #111e35;
-  --color-accent: #e53935;        /* AB red */
-  --color-accent-hover: #ef5350;
-  --color-yellow: #ffc107;        /* AB yellow */
-  --color-yellow-dark: #e65100;
-  --color-success: #4caf50;       /* AB green pig */
-  --color-success-dark: #1b5e20;
-  --color-text: #ffffff;
-  --color-muted: #6b82a8;
-  --color-border: #1e3050;
+  /* Custom design tokens */
+  --color-neon: #39ff14;
+  --color-neon-muted: rgba(57, 255, 20, 0.08);
+  --color-orange: #ff6b2b;
+  --color-orange-muted: rgba(255, 107, 43, 0.10);
+  --color-yellow: #ffc107;
 
   --font-display: var(--font-oswald);
   --font-body: var(--font-noto-sans-kr);
@@ -27,10 +21,8 @@
 
 @layer base {
   html {
-    background-color: #0a1628;
-    background-image:
-      radial-gradient(ellipse at 50% 0%, rgba(30,80,180,0.25) 0%, transparent 70%);
-    color: #ffffff;
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-body), sans-serif;
     -webkit-tap-highlight-color: transparent;
     @apply font-sans;
@@ -60,15 +52,7 @@
     display: none;
   }
 
-  /* AB panel — dark navy card */
-  .mc-panel {
-    background: #111e35;
-    border: 2px solid #1e3a60;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.5);
-    border-radius: 0;
-  }
-
-  /* AB button — slate */
+  /* Legacy — exercise page camera controls only */
   .mc-btn {
     background: #1e3050;
     border: 2px solid #2a4470;
@@ -76,17 +60,11 @@
     border-radius: 0;
     color: #ffffff;
     font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-    transition: filter 0.1s;
     cursor: pointer;
+    transition: filter 0.1s;
   }
+  .mc-btn:active { filter: brightness(0.85); }
 
-  .mc-btn:active {
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-    filter: brightness(0.85);
-  }
-
-  /* AB primary button — Angry Bird red */
   .mc-btn-orange {
     background: #e53935;
     border: 2px solid #7f0000;
@@ -94,37 +72,11 @@
     border-radius: 0;
     color: white;
     font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-    transition: filter 0.1s;
     cursor: pointer;
-  }
-
-  .mc-btn-orange:active {
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 #7f0000;
-    filter: brightness(0.88);
-    transform: translateY(2px);
-  }
-
-  /* AB yellow button */
-  .mc-btn-yellow {
-    background: #ffc107;
-    border: 2px solid #e65100;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 3px 0 #bf360c;
-    border-radius: 0;
-    color: #1a0a00;
-    font-weight: 700;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
     transition: filter 0.1s;
-    cursor: pointer;
   }
+  .mc-btn-orange:active { filter: brightness(0.88); transform: translateY(2px); }
 
-  .mc-btn-yellow:active {
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 #bf360c;
-    filter: brightness(0.92);
-    transform: translateY(2px);
-  }
-
-  /* AB green button */
   .mc-btn-green {
     background: #4caf50;
     border: 2px solid #1b5e20;
@@ -132,16 +84,10 @@
     border-radius: 0;
     color: white;
     font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    transition: filter 0.1s;
     cursor: pointer;
+    transition: filter 0.1s;
   }
-
-  .mc-btn-green:active {
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 #1b5e20;
-    filter: brightness(0.88);
-    transform: translateY(2px);
-  }
+  .mc-btn-green:active { filter: brightness(0.88); transform: translateY(2px); }
 
   .mc-input {
     background: #07101f;
@@ -151,80 +97,41 @@
     color: #ffffff;
     outline: none;
   }
-
   .mc-input:focus {
     border-color: #ffc107;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 0 1px #ffc107;
   }
 }
 
+/* Dark-only theme: Angry Birds × shadcn */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0.00 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #07111f;
+  --foreground: #f0ebe0;
+  --card: #0d1c32;
+  --card-foreground: #f0ebe0;
+  --popover: #0d1c32;
+  --popover-foreground: #f0ebe0;
+  --primary: #e53935;
+  --primary-foreground: #ffffff;
+  --secondary: #162540;
+  --secondary-foreground: #f0ebe0;
+  --muted: #0f1e35;
+  --muted-foreground: #6b82a8;
+  --accent: #ffc107;
+  --accent-foreground: #1a0a00;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: rgba(255, 255, 255, 0.07);
+  --input: rgba(255, 255, 255, 0.05);
+  --ring: #e53935;
+  --radius: 0.75rem;
+  --sidebar: #0d1c32;
+  --sidebar-foreground: #f0ebe0;
+  --sidebar-primary: #e53935;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #162540;
+  --sidebar-accent-foreground: #f0ebe0;
+  --sidebar-border: rgba(255,255,255,0.07);
+  --sidebar-ring: #e53935;
 }
 
 @theme inline {
@@ -237,11 +144,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);

@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n/context";
 import LangToggle from "@/components/ui/LangToggle";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -52,74 +55,55 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #0a1628 0%, #061020 100%)" }}
-    >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-
-      <div className="w-full max-w-[320px] relative z-10">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background">
+      <div className="w-full max-w-[320px] space-y-4">
         {/* Lang toggle */}
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end">
           <LangToggle />
         </div>
 
-        {/* Title panel */}
-        <div
-          className="text-center mb-6 px-8 py-6"
-          style={{
-            background: "#0d1c35",
-            border: "2px solid #1e3a60",
-            boxShadow: "0 0 60px rgba(229,57,53,0.15), 0 20px 40px rgba(0,0,0,0.6)",
-          }}
-        >
-          <p className="text-[10px] tracking-[0.3em] uppercase mb-4 font-bold" style={{ color: "#6b82a8" }}>
-            {t.onboarding.badge}
-          </p>
-          <div className="leading-[0.85] mb-4">
-            <div
-              className="text-[88px] font-[family-name:var(--font-oswald)] font-bold tracking-tight"
-              style={{ color: "#e53935", textShadow: "4px 4px 0 rgba(100,0,0,0.7), 0 0 60px rgba(229,57,53,0.4)" }}
-            >
-              {t.appName.split(" ")[0]}
+        {/* Title card */}
+        <Card className="border text-center">
+          <CardContent className="px-8 py-8 space-y-3">
+            <p className="text-[10px] tracking-[0.3em] uppercase font-bold text-muted-foreground">
+              {t.onboarding.badge}
+            </p>
+            <div className="leading-[0.85]">
+              <div className="text-[80px] font-display font-bold tracking-tight text-primary">
+                {t.appName.split(" ")[0]}
+              </div>
+              <div className="text-[80px] font-display font-bold tracking-tight text-[var(--color-yellow)]">
+                {t.appName.split(" ")[1] ?? ""}
+              </div>
             </div>
-            <div
-              className="text-[88px] font-[family-name:var(--font-oswald)] font-bold tracking-tight"
-              style={{ color: "#ffc107", textShadow: "4px 4px 0 rgba(100,50,0,0.7)" }}
-            >
-              {t.appName.split(" ")[1] ?? ""}
-            </div>
-          </div>
-          <p className="text-xs leading-relaxed" style={{ color: "#6b82a8" }}>
-            {t.appSub}
-          </p>
-        </div>
+            <p className="text-xs text-muted-foreground leading-relaxed pt-1">
+              {t.appSub}
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-2">
-          <input
+          <Input
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             placeholder={t.onboarding.placeholder}
             maxLength={20}
             autoFocus
-            className="mc-input w-full px-4 py-4 text-[#f5f0e8] placeholder-[#555555] text-sm"
+            className="h-12 text-sm bg-card border-border focus-visible:ring-primary"
           />
           {error && (
-            <p className="text-[#ff6b2b] text-xs px-1" style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-              {error}
-            </p>
+            <p className="text-primary text-xs px-1">{error}</p>
           )}
-
-          <button
+          <Button
             type="submit"
+            size="lg"
             disabled={!nickname.trim() || loading}
-            className="mc-btn-orange w-full py-4 text-base disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full"
           >
             {loading ? t.onboarding.loading : t.onboarding.cta}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

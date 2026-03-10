@@ -7,6 +7,7 @@ import BottomNav from "@/components/ui/BottomNav";
 import { useLang } from "@/lib/i18n/context";
 import type { DailyRanking } from "@/lib/supabase/types";
 import { todayString } from "@/lib/utils/streak";
+import { Badge } from "@/components/ui/badge";
 
 export default function RankingPage() {
   const [rankings, setRankings] = useState<DailyRanking[]>([]);
@@ -36,30 +37,25 @@ export default function RankingPage() {
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="px-5 pt-14 pb-4" style={{ borderBottom: "2px solid #3a3a3a" }}>
-        <div className="flex items-end justify-between">
-          <div>
-            <h1 className="text-[28px] font-[family-name:var(--font-oswald)] font-bold text-[#f5f0e8] leading-none"
-              style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-              {t.ranking.title}
-            </h1>
-            <p className="text-[9px] font-bold mt-1.5 tracking-[0.2em] uppercase"
-              style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-              {t.ranking.realtimeFull}
-            </p>
-          </div>
-          {rankings.length > 0 && (
-            <div className="text-xs font-bold px-2 py-1"
-              style={{ color: "#cccccc", background: "#3a3a3a", border: "1px solid #5a5a5a", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-              {t.ranking.participants(rankings.length)}
-            </div>
-          )}
+      <header className="px-5 pt-12 pb-4 border-b border-border flex items-end justify-between">
+        <div>
+          <h1 className="text-[28px] font-display font-bold text-foreground leading-none">
+            {t.ranking.title}
+          </h1>
+          <p className="text-[10px] font-semibold mt-1.5 tracking-[0.2em] uppercase text-muted-foreground">
+            {t.ranking.realtimeFull}
+          </p>
         </div>
+        {rankings.length > 0 && (
+          <Badge variant="realtime">
+            {t.ranking.participants(rankings.length)}
+          </Badge>
+        )}
       </header>
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="w-5 h-5 border-2 border-[#ff6b2b] border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <LeaderboardList rankings={rankings} myUserId={userId} />

@@ -6,6 +6,7 @@ import MonthCalendar from "@/components/calendar/MonthCalendar";
 import BottomNav from "@/components/ui/BottomNav";
 import { calcStreak } from "@/lib/utils/streak";
 import { useLang } from "@/lib/i18n/context";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function CalendarPage() {
   const [logDates, setLogDates] = useState<string[]>([]);
@@ -33,37 +34,34 @@ export default function CalendarPage() {
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="px-5 pt-14 pb-5" style={{ borderBottom: "2px solid #3a3a3a" }}>
-        <h1 className="text-[28px] font-[family-name:var(--font-oswald)] font-bold text-[#f5f0e8] leading-none"
-          style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
+      <header className="px-5 pt-12 pb-5 border-b border-border">
+        <h1 className="text-[28px] font-display font-bold text-foreground leading-none">
           {t.calendar.title}
         </h1>
         <div className="flex gap-3 mt-4">
-          <div className="px-4 py-3 flex items-baseline gap-2"
-            style={{ background: "#5a5a5a", border: "2px solid #2a2a2a",
-              boxShadow: "inset 3px 3px 0 rgba(255,255,255,0.25), inset -3px -3px 0 rgba(0,0,0,0.55)" }}>
-            <span className="text-[32px] leading-none font-[family-name:var(--font-oswald)] font-bold text-[#f5f0e8]"
-              style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-              {totalDays}
-            </span>
-            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>{t.calendar.totalDays}</span>
-          </div>
-          <div className="px-4 py-3 flex items-baseline gap-2"
-            style={{ background: "#2a1a0a", border: "2px solid #7a2800",
-              boxShadow: "inset 3px 3px 0 rgba(255,107,43,0.2), inset -3px -3px 0 rgba(0,0,0,0.55)" }}>
-            <span className="text-[32px] leading-none font-[family-name:var(--font-oswald)] font-bold text-[#ff6b2b]"
-              style={{ textShadow: "2px 2px 0 rgba(100,30,0,0.8)" }}>
-              {streak}
-            </span>
-            <span className="text-xs font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>{t.calendar.streakUnit}</span>
-          </div>
+          <Card className="border flex-1">
+            <CardContent className="px-4 py-3 flex items-baseline gap-2">
+              <span className="text-[32px] leading-none font-display font-bold text-foreground">
+                {totalDays}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">{t.calendar.totalDays}</span>
+            </CardContent>
+          </Card>
+          <Card className="border flex-1 ring-1 ring-[var(--color-orange)]/20">
+            <CardContent className="px-4 py-3 flex items-baseline gap-2">
+              <span className="text-[32px] leading-none font-display font-bold text-[var(--color-orange)]">
+                {streak}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">{t.calendar.streakUnit}</span>
+            </CardContent>
+          </Card>
         </div>
       </header>
 
       <div className="px-5 pt-4">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <div className="w-5 h-5 border-2 border-[#ff6b2b] border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <MonthCalendar logDates={logDates} />

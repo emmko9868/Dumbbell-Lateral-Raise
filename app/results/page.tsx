@@ -5,6 +5,10 @@ import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n/context";
 import { todayString } from "@/lib/utils/streak";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 function ResultsContent() {
   const router = useRouter();
@@ -37,54 +41,62 @@ function ResultsContent() {
   const title = isNewRecord ? t.results.titleRecord : t.results.titleNormal;
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-full max-w-[320px]">
-          {isNewRecord && (
-            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 mb-6 font-bold text-xs tracking-wide"
-              style={{ background: "#2a1000", border: "2px solid #ff6b2b", color: "#ff6b2b",
-                boxShadow: "inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.4)" }}>
-              {t.results.newRecord}
-            </div>
-          )}
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1 flex flex-col items-center justify-center px-6">
+        <div className="w-full max-w-[320px] space-y-5">
 
-          <h1 className="text-2xl font-bold text-[#f5f0e8] mb-8 leading-snug"
-            style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.8)" }}>
-            {title}
-          </h1>
-
-          {/* Big number panel */}
-          <div className="mb-6 py-6"
-            style={{ background: "#1a3a1a", border: "2px solid #2a5a2a",
-              boxShadow: "inset 3px 3px 0 rgba(57,255,20,0.1), inset -3px -3px 0 rgba(0,0,0,0.6)" }}>
-            <span className="text-[110px] leading-none font-[family-name:var(--font-oswald)] font-bold text-[#39ff14]"
-              style={{ textShadow: "4px 4px 0 rgba(0,60,0,0.8), 0 0 60px rgba(57,255,20,0.25)" }}>
-              {reps}
-            </span>
-            <span className="text-3xl font-[family-name:var(--font-oswald)] ml-2"
-              style={{ color: "#aaaaaa", textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-              {t.unit}
-            </span>
+          {/* Header */}
+          <div className="text-center space-y-2">
+            {isNewRecord && (
+              <Badge variant="orange" className="text-xs px-3 py-1 h-auto">
+                {t.results.newRecord}
+              </Badge>
+            )}
+            <h1 className="text-2xl font-bold text-foreground leading-snug">
+              {title}
+            </h1>
           </div>
 
-          {rank !== null && (
-            <p className="font-bold mb-6" style={{ color: "#ff6b2b", textShadow: "2px 2px 0 rgba(100,30,0,0.8)" }}>
-              {t.results.rank(rank)}
-            </p>
-          )}
-          {rank === null && <div className="mb-6" />}
+          {/* Big number */}
+          <Card className="border ring-1 ring-[var(--color-neon)]/20">
+            <CardContent className="py-8 text-center">
+              <span className="text-[100px] leading-none font-display font-bold text-[var(--color-neon)]">
+                {reps}
+              </span>
+              <span className="text-2xl font-display text-muted-foreground ml-2">
+                {t.unit}
+              </span>
+            </CardContent>
+          </Card>
 
-          <p className="text-sm leading-relaxed mb-8" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-            {t.results.motivation(reps)}
-          </p>
+          {/* Rank + motivation */}
+          <Card className="border">
+            <CardContent className="py-4 px-5 space-y-3">
+              {rank !== null && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">오늘 순위</span>
+                    <span className="font-display font-bold text-lg text-[var(--color-orange)]">
+                      {t.results.rank(rank)}
+                    </span>
+                  </div>
+                  <Separator />
+                </>
+              )}
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t.results.motivation(reps)}
+              </p>
+            </CardContent>
+          </Card>
 
+          {/* Actions */}
           <div className="space-y-2">
-            <button onClick={handleShare} className="mc-btn w-full py-4 text-sm">
+            <Button variant="outline" size="lg" onClick={handleShare} className="w-full">
               {t.results.share}
-            </button>
-            <button onClick={() => router.push("/")} className="mc-btn-orange w-full py-4 text-[17px]">
+            </Button>
+            <Button size="lg" onClick={() => router.push("/")} className="w-full">
               {t.results.home}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

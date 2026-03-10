@@ -3,6 +3,10 @@
 import type { DailyRanking } from "@/lib/supabase/types";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n/context";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface LeaderboardListProps {
   rankings: DailyRanking[];
@@ -15,9 +19,7 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
   if (rankings.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-        <p className="text-sm font-bold" style={{ color: "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
-          {t.ranking.empty}
-        </p>
+        <p className="text-sm text-muted-foreground">{t.ranking.empty}</p>
       </div>
     );
   }
@@ -27,20 +29,30 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
   return (
     <div className="relative">
       <ul>
-        {rankings.map((entry) => {
+        {rankings.map((entry, idx) => {
           const isMe = entry.user_id === myUserId;
           const isKing = entry.rank === 1;
           const isTop3 = (entry.rank ?? 99) <= 3;
 
           return (
             <li key={entry.user_id}>
-              <Link href={`/profile/${entry.user_id}`}
-                className="flex items-center gap-4 px-5 py-4 transition-all"
-                style={{ borderBottom: "1px solid #3a3a3a", background: isMe ? "#1c1408" : isKing ? "#131008" : "transparent" }}>
+              {idx > 0 && <Separator />}
+              <Link
+                href={`/profile/${entry.user_id}`}
+                className={cn(
+                  "flex items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/40",
+                  isMe && "bg-[var(--color-orange-muted)]",
+                  isKing && !isMe && "bg-yellow-500/5"
+                )}
+              >
                 <div className="w-10 shrink-0 text-center">
-                  {isKing ? <span className="text-2xl">👑</span> : (
-                    <span className="font-[family-name:var(--font-oswald)] font-bold text-lg"
-                      style={{ color: isTop3 ? "#ff6b2b" : "#cccccc", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
+                  {isKing ? (
+                    <span className="text-2xl">👑</span>
+                  ) : (
+                    <span className={cn(
+                      "font-display font-bold text-lg",
+                      isTop3 ? "text-[var(--color-orange)]" : "text-muted-foreground"
+                    )}>
                       {entry.rank}
                     </span>
                   )}
@@ -48,31 +60,33 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-medium truncate"
-                      style={{ color: isKing ? "#f5c842" : "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
+                    <span className={cn(
+                      "font-medium truncate",
+                      isKing ? "text-[var(--color-yellow)]" : "text-foreground"
+                    )}>
                       {entry.nickname}
                     </span>
                     {isKing && (
-                      <span className="text-[9px] font-bold tracking-wide shrink-0 px-1.5 py-0.5"
-                        style={{ color: "#ff6b2b", background: "#2a1000", border: "1px solid #7a2800" }}>
+                      <Badge variant="orange" className="text-[10px] shrink-0">
                         {t.ranking.king}
-                      </span>
+                      </Badge>
                     )}
                     {isMe && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 shrink-0"
-                        style={{ color: "#39ff14", background: "#001800", border: "1px solid #1a6600" }}>
+                      <Badge variant="neon" className="text-[10px] shrink-0">
                         {t.ranking.me}
-                      </span>
+                      </Badge>
                     )}
                   </div>
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <span className="font-[family-name:var(--font-oswald)] font-bold text-2xl"
-                    style={{ color: isMe ? "#39ff14" : isKing ? "#f5c842" : "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.7)" }}>
+                  <span className={cn(
+                    "font-display font-bold text-2xl",
+                    isMe ? "text-[var(--color-neon)]" : isKing ? "text-[var(--color-yellow)]" : "text-foreground"
+                  )}>
                     {entry.reps}
                   </span>
-                  <span className="text-xs ml-0.5" style={{ color: "#aaaaaa" }}>{t.unit}</span>
+                  <span className="text-xs text-muted-foreground ml-0.5">{t.unit}</span>
                 </div>
               </Link>
             </li>
@@ -82,26 +96,21 @@ export default function LeaderboardList({ rankings, myUserId }: LeaderboardListP
 
       {myEntry && (
         <div className="sticky bottom-[72px] px-4 py-2 pointer-events-none">
-          <div className="px-5 py-3 flex items-center gap-4 pointer-events-auto"
-            style={{ background: "#1c1408", border: "2px solid #ff6b2b",
-              boxShadow: "inset 2px 2px 0 rgba(255,107,43,0.2), inset -2px -2px 0 rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.8)" }}>
-            <span className="font-[family-name:var(--font-oswald)] font-bold text-xl w-10 text-center shrink-0"
-              style={{ color: "#ff6b2b", textShadow: "1px 1px 0 rgba(100,30,0,0.8)" }}>
-              {myEntry.rank}
-            </span>
-            <span className="flex-1 font-medium truncate" style={{ color: "#f5f0e8", textShadow: "1px 1px 0 rgba(0,0,0,0.8)" }}>
-              {myEntry.nickname}
-              <span className="ml-2 text-[9px] font-bold px-1.5 py-0.5"
-                style={{ color: "#39ff14", background: "#001800", border: "1px solid #1a6600" }}>
-                {t.ranking.me}
+          <Card className="border border-[var(--color-orange)]/40 bg-[var(--color-orange-muted)] pointer-events-auto shadow-lg">
+            <CardContent className="px-5 py-3 flex items-center gap-4">
+              <span className="font-display font-bold text-xl w-10 text-center shrink-0 text-[var(--color-orange)]">
+                {myEntry.rank}
               </span>
-            </span>
-            <span className="font-[family-name:var(--font-oswald)] font-bold text-2xl shrink-0"
-              style={{ color: "#39ff14", textShadow: "1px 1px 0 rgba(0,40,0,0.8)" }}>
-              {myEntry.reps}
-              <span className="text-xs font-normal ml-0.5" style={{ color: "#aaaaaa" }}>{t.unit}</span>
-            </span>
-          </div>
+              <span className="flex-1 font-medium truncate text-foreground flex items-center gap-2">
+                {myEntry.nickname}
+                <Badge variant="neon" className="text-[10px] shrink-0">{t.ranking.me}</Badge>
+              </span>
+              <span className="font-display font-bold text-2xl shrink-0 text-[var(--color-neon)]">
+                {myEntry.reps}
+                <span className="text-xs font-normal ml-0.5 text-muted-foreground">{t.unit}</span>
+              </span>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

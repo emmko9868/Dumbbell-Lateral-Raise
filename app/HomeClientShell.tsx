@@ -11,6 +11,7 @@ import LangToggle from "@/components/ui/LangToggle";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { calcStreak, todayString } from "@/lib/utils/streak";
 import { useLang } from "@/lib/i18n/context";
+import { Badge } from "@/components/ui/badge";
 import type { DailyRanking } from "@/lib/supabase/types";
 
 interface HomeClientShellProps {
@@ -67,29 +68,25 @@ export default function HomeClientShell({ todayRankings }: HomeClientShellProps)
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="px-10 pt-14 pb-5 flex items-end justify-between"
-        style={{ borderBottom: "2px solid #1e3050" }}>
+      <header className="px-5 pt-12 pb-4 flex items-center justify-between border-b border-border">
         <div>
-          <h1 className="text-[36px] font-[family-name:var(--font-oswald)] font-bold leading-none tracking-tight"
-            style={{ color: "#e53935", textShadow: "3px 3px 0 rgba(100,0,0,0.6), 0 0 30px rgba(229,57,53,0.3)" }}>
+          <h1 className="text-[32px] font-display font-bold leading-none tracking-tight text-primary">
             {t.appName}
           </h1>
           {nickname && (
-            <p className="text-xs mt-1.5 font-bold" style={{ color: "#6b82a8" }}>
-              {t.home.greeting} <span style={{ color: "#ffc107" }}>{nickname}</span>
+            <p className="text-xs mt-1.5 text-muted-foreground">
+              {t.home.greeting}{" "}
+              <span className="text-[var(--color-yellow)] font-semibold">{nickname}</span>
             </p>
           )}
         </div>
         <div className="flex items-center gap-2">
           <LangToggle />
-          <div className="text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1"
-            style={{ color: "#ffc107", background: "#1e3050", border: "1px solid #2a4470" }}>
-            DAILY
-          </div>
+          <Badge variant="yellow" className="text-[10px] tracking-widest uppercase">DAILY</Badge>
         </div>
       </header>
 
-      <main className="px-10 pt-4 space-y-2">
+      <main className="px-5 pt-4 space-y-3">
         <TodayCard reps={todayReps} completed={todayReps !== null} />
         <HeroScene />
         <StreakBadge streak={streak} />
